@@ -70,20 +70,63 @@ namespace Hearth.ArcGIS
         /// <param name="assembly">程序集</param>
         public void RegisterAssemblyTypes(Assembly assembly)
         {
-            IEnumerable<Type> classes = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract);
+            IEnumerable<Type> classes = assembly.GetLoadableTypes().Where(t => t.IsClass && !t.IsAbstract);
             foreach (Type type in classes)
             {
-                ServiceAttribute? registerAttribute = type.GetCustomAttribute<ServiceAttribute>();
-                if (registerAttribute != null)
-                {
-                    IReuse? reuse = GetIReuseByEnum(registerAttribute.Reuse);
-                    Type serviceType = registerAttribute.ServiceType ?? type;
-                    if (!Container.IsRegistered(serviceType, registerAttribute.ServiceKey))
-                    {
-                        Container.Register(serviceType, type, serviceKey: registerAttribute.ServiceKey, reuse: reuse);
-                    }
-                }
+                RegisterAssemblyType(type);
             }
+        }
+
+        private void RegisterAssemblyType(Type type)
+        {
+            // 根据类型特性注册服务
+            ServiceAttribute? registerAttribute = type.GetCustomAttribute<ServiceAttribute>();
+            if (registerAttribute != null)
+            {
+                IReuse? reuse = GetIReuseByEnum(registerAttribute.Reuse);
+                Type serviceType = registerAttribute.ServiceType ?? type;
+                Container.Register(serviceType, type, serviceKey: registerAttribute.ServiceKey, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                return;
+            }
+            // 根据接口注册服务
+            if (typeof(IService).IsAssignableFrom(type))
+            {
+                IReuse? reuse = GetReuseByType(type);
+                IEnumerable<Type> interfaces = type.GetInterfaces().Where(i => !IsServiceBaseType(i));
+                foreach (Type interfaceType in interfaces)
+                {
+                    // 注册接口和类型
+                    Container.Register(interfaceType, type, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                }
+                // 注册类型
+                Container.Register(type, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                return;
+            }
+        }
+
+        private bool IsServiceBaseType(Type type)
+        {
+            return type == typeof(IService) 
+                || type == typeof(ITransientService) 
+                || type == typeof(ISingletonService) 
+                || type == typeof(IScopedService) 
+                || type == typeof(IScopedOrSingletonService) 
+                || type == typeof(IInThreadService);
+        }
+
+        private IReuse? GetReuseByType(Type type)
+        {
+            if (typeof(ITransientService).IsAssignableFrom(type))
+                return Reuse.Transient;
+            else if (typeof(ISingletonService).IsAssignableFrom(type))
+                return Reuse.Singleton;
+            else if (typeof(IScopedService).IsAssignableFrom(type))
+                return Reuse.Scoped;
+            else if (typeof(IScopedOrSingletonService).IsAssignableFrom(type))
+                return Reuse.ScopedOrSingleton;
+            else if (typeof(IInThreadService).IsAssignableFrom(type))
+                return Reuse.InThread;
+            return null;
         }
 
         private static IReuse? GetIReuseByEnum(ReuseEnum reuseEnum)

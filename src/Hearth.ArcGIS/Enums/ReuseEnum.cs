@@ -13,7 +13,7 @@ namespace Hearth.ArcGIS
         Default,
 
         /// <summary>
-        /// 与作用域相同，但需要 <see cref="ThreadScopeContext"/> 。
+        /// 与 <see cref="Scoped"/> 作用域相同，但需要 <see cref="ThreadScopeContext"/> 。
         /// </summary>
         InThread,
 
