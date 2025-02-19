@@ -14,6 +14,9 @@
     <Content Include="Config.daml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Hearth.ArcGIS" Version="0.0.1-rc1" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">
       <HintPath>D:\software\GeoScene\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
       <CopyLocal>False</CopyLocal>
@@ -84,9 +87,6 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Hearth.ArcGIS\Hearth.ArcGIS.csproj" />
   </ItemGroup>
   <Import Project="D:\software\GeoScene\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('D:\software\GeoScene\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
