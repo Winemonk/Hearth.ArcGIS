@@ -9,7 +9,7 @@ namespace Hearth.ArcGIS
     public static class IInjectableExtensions
     {
         /// <summary>
-        /// 注入 <see cref="IInjectable"/> 实例内的 <see cref="InjectAttribute"/> 标注的所有字段。
+        /// 注入 <paramref name="injectable"/> 实例内的 <see cref="InjectAttribute"/> 标注的所有字段。
         /// </summary>
         /// <remarks>
         /// 若 <see cref="InjectAttribute"/> 标注字段为 <c>readonly</c> ，则必须在构造函数中注入。
@@ -17,6 +17,16 @@ namespace Hearth.ArcGIS
         /// </remarks>
         /// <param name="injectable">可注入实例</param>
         public static void InjectServices(this IInjectable injectable)
+        {
+            IResolver resolver = HearthApp.Container;
+            if (injectable is INamedScopeInjectable scope)
+                resolver = HearthApp.Container.OpenScope(scope.Name);
+            else if (injectable is IScopeInjectable)
+                resolver = HearthApp.Container.OpenScope();
+            InjectServices(resolver, injectable);
+        }
+
+        private static void InjectServices(IResolver resolver, IInjectable injectable)
         {
             List<FieldInfo> fieldInfos = GetAllFields(injectable.GetType());
             foreach (FieldInfo fieldInfo in fieldInfos)
@@ -27,7 +37,7 @@ namespace Hearth.ArcGIS
                     continue;
                 }
                 Type serviceType = autowireAttribute.ServiceType ?? fieldInfo.FieldType;
-                object val = HearthApp.App.Container.Resolve(serviceType, serviceKey: autowireAttribute.Key);
+                object val = resolver.Resolve(serviceType, serviceKey: autowireAttribute.Key);
                 fieldInfo.SetValue(injectable, val);
             }
         }

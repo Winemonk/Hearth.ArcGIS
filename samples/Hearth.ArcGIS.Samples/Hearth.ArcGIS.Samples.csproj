@@ -14,7 +14,7 @@
     <Content Include="Config.daml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Hearth.ArcGIS" Version="0.0.1-rc1" />
+    <ProjectReference Include="..\..\src\Hearth.ArcGIS\Hearth.ArcGIS.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

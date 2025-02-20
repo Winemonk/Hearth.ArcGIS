@@ -2,8 +2,7 @@
 
 namespace Hearth.ArcGIS.Samples.Services
 {
-    [Service(typeof(TestLogService))]
-    public class TestLogService
+    public class TestLogService : ITransientService
     {
         private readonly ILogger<TestLogService> _logger;
         public TestLogService(ILogger<TestLogService> logger)

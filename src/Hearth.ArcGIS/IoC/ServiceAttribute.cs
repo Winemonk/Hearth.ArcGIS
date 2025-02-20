@@ -27,7 +27,7 @@
         /// <param name="serviceType"> 服务注册类型 </param>
         /// <param name="serviceKey"> 服务注册键 </param>
         /// <param name="reuse"> 服务重用模式 </param>
-        public ServiceAttribute(Type? serviceType, string? serviceKey = null, ReuseEnum reuse = ReuseEnum.Default)
+        public ServiceAttribute(Type? serviceType = null, string? serviceKey = null, ReuseEnum reuse = ReuseEnum.Default)
         {
             ServiceType = serviceType;
             ServiceKey = serviceKey;

@@ -23,7 +23,7 @@ namespace Hearth.ArcGIS
         Scoped,
 
         /// <summary>
-        /// 与 <see cref="Scoped"/> 相同，但在没有可用范围的情况下，将回退到 <see cref="Singleton"/> 重用。
+        /// 与 <see cref="Scoped"/> 相同，但在没有可用作用域的情况下，将回退到 <see cref="Singleton"/> 重用。
         /// </summary>
         ScopedOrSingleton,
 
