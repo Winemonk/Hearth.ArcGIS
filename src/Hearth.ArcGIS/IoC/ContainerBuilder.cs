@@ -1,10 +1,6 @@
 ﻿using DryIoc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Serilog;
-using System.Configuration;
-using System.IO;
 
 namespace Hearth.ArcGIS
 {
@@ -17,8 +13,7 @@ namespace Hearth.ArcGIS
         {
             Container container = new Container(rules => rules.With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic));
             container.Register<HearthApp>(Reuse.Singleton);
-            //AddNLog(container);
-            AddSerilog(container);
+            AddNLog(container);
             UseLocationProvider(container);
             return container;
         }
@@ -32,7 +27,7 @@ namespace Hearth.ArcGIS
             var loggerFactory = LoggerFactory.Create(builder => builder.AddNLog());
             container.RegisterInstance<ILoggerFactory>(loggerFactory);
             container.Register(typeof(ILogger<>), typeof(Logger<>));
-            container.RegisterDelegate<ILoggerFactory, Microsoft.Extensions.Logging.ILogger>(lf => lf.CreateLogger("."));
+            container.RegisterDelegate<ILoggerFactory, ILogger>(lf => lf.CreateLogger("."));
         }
 
         /// <summary>
