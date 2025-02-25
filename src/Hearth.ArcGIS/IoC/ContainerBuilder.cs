@@ -27,7 +27,7 @@ namespace Hearth.ArcGIS
             AddMapperProvidor(container);
             return container;
         }
-        
+
         /// <summary>
         /// 添加 NLog
         /// </summary>

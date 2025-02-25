@@ -2,7 +2,6 @@
 
 namespace Hearth.ArcGIS
 {
-
     /// <summary>
     /// <see cref="Assembly"/> 扩展方法
     /// </summary>

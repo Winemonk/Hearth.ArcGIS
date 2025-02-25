@@ -109,7 +109,7 @@ namespace Hearth.ArcGIS
             if (registerAttribute != null)
             {
                 IReuse? reuse = GetIReuseByEnum(registerAttribute.Reuse);
-                if(registerAttribute.ServiceType == null)
+                if (registerAttribute.ServiceType == null)
                 {
                     RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
                     container.Register(implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);

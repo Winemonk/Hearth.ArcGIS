@@ -45,6 +45,7 @@ namespace Hearth.ArcGIS
         /// <param name="source">源实例</param>
         /// <returns>目标实例</returns>
         public TDestination Map<TDestination>(object source) => _currentMapper.ThrowIfNull(_notInitException).Map<TDestination>(source);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -53,6 +54,7 @@ namespace Hearth.ArcGIS
         /// <param name="source">源实例</param>
         /// <returns>目标实例</returns>
         public TDestination Map<TSource, TDestination>(TSource source) => _currentMapper.ThrowIfNull(_notInitException).Map<TSource, TDestination>(source);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -62,6 +64,7 @@ namespace Hearth.ArcGIS
         /// <param name="destination">目标实例</param>
         /// <returns>目标实例</returns>
         public TDestination Map<TSource, TDestination>(TSource source, TDestination destination) => _currentMapper.ThrowIfNull(_notInitException).Map(source, destination);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -70,6 +73,7 @@ namespace Hearth.ArcGIS
         /// <param name="opts">映射选项</param>
         /// <returns>目标类型实例</returns>
         public TDestination Map<TDestination>(object source, Action<IMappingOperationOptions<object, TDestination>> opts) => _currentMapper.ThrowIfNull(_notInitException).Map(source, opts);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -79,6 +83,7 @@ namespace Hearth.ArcGIS
         /// <param name="opts">映射选项</param>
         /// <returns>目标实例</returns>
         public TDestination Map<TSource, TDestination>(TSource source, Action<IMappingOperationOptions<TSource, TDestination>> opts) => _currentMapper.ThrowIfNull(_notInitException).Map(source, opts);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -89,6 +94,7 @@ namespace Hearth.ArcGIS
         /// <param name="opts">映射选项</param>
         /// <returns>目标实例</returns>
         public TDestination Map<TSource, TDestination>(TSource source, TDestination destination, Action<IMappingOperationOptions<TSource, TDestination>> opts) => _currentMapper.ThrowIfNull(_notInitException).Map(source, destination, opts);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -98,6 +104,7 @@ namespace Hearth.ArcGIS
         /// <param name="opts">映射选项</param>
         /// <returns>目标实例</returns>
         public object Map(object source, Type sourceType, Type destinationType, Action<IMappingOperationOptions<object, object>> opts) => _currentMapper.ThrowIfNull(_notInitException).Map(source, sourceType, destinationType, opts);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -108,6 +115,7 @@ namespace Hearth.ArcGIS
         /// <param name="opts">映射选项</param>
         /// <returns>目标实例</returns>
         public object Map(object source, object destination, Type sourceType, Type destinationType, Action<IMappingOperationOptions<object, object>> opts) => _currentMapper.ThrowIfNull(_notInitException).Map(source, destination, sourceType, destinationType, opts);
+
         /// <summary>
         /// 投影可查询的输入。
         /// </summary>
@@ -118,6 +126,7 @@ namespace Hearth.ArcGIS
         /// <param name="membersToExpand">要扩展的明确成员</param>
         /// <returns>可查询的结果，使用可查询的扩展方法来投影和执行结果</returns>
         public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source, object parameters = null, params Expression<Func<TDestination, object>>[] membersToExpand) => _currentMapper.ThrowIfNull(_notInitException).ProjectTo<TDestination>(source, parameters, membersToExpand);
+
         /// <summary>
         /// 投影可查询的输入。
         /// </summary>
@@ -127,6 +136,7 @@ namespace Hearth.ArcGIS
         /// <param name="membersToExpand">要扩展的明确成员</param>
         /// <returns>可查询的结果，使用可查询的扩展方法来投影和执行结果</returns>
         public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source, IDictionary<string, object> parameters, params string[] membersToExpand) => _currentMapper.ThrowIfNull(_notInitException).ProjectTo<TDestination>(source, parameters, membersToExpand);
+
         /// <summary>
         /// 投影可查询的输入。
         /// </summary>
@@ -136,6 +146,7 @@ namespace Hearth.ArcGIS
         /// <param name="membersToExpand">要扩展的明确成员</param>
         /// <returns>可查询的结果，使用可查询的扩展方法来投影和执行结果</returns>
         public IQueryable ProjectTo(IQueryable source, Type destinationType, IDictionary<string, object> parameters = null, params string[] membersToExpand) => _currentMapper.ThrowIfNull(_notInitException).ProjectTo(source, destinationType, parameters, membersToExpand);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -144,6 +155,7 @@ namespace Hearth.ArcGIS
         /// <param name="destinationType">目标类型</param>
         /// <returns>目标实例</returns>
         public object Map(object source, Type sourceType, Type destinationType) => _currentMapper.ThrowIfNull(_notInitException).Map(source, sourceType, destinationType);
+
         /// <summary>
         /// 将源实例映射到目标类型。
         /// </summary>
@@ -153,6 +165,7 @@ namespace Hearth.ArcGIS
         /// <param name="destinationType">目标类型</param>
         /// <returns>目标实例</returns>
         public object Map(object source, object destination, Type sourceType, Type destinationType) => _currentMapper.ThrowIfNull(_notInitException).Map(source, destination, sourceType, destinationType);
+
         /// <summary>
         /// 添加映射配置
         /// </summary>
@@ -168,6 +181,7 @@ namespace Hearth.ArcGIS
                     UpdateMapper();
             }
         }
+
         /// <summary>
         /// 添加映射配置
         /// </summary>

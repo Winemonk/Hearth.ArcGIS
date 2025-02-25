@@ -8,6 +8,7 @@ namespace Hearth.ArcGIS
     public class HearthApp : HearthAppBase
     {
         private static HearthApp? _app;
+
         /// <summary>
         /// 获取当前 <see cref="HearthApp"/> 实例
         /// </summary>
@@ -20,7 +21,6 @@ namespace Hearth.ArcGIS
 
         private HearthApp(IContainerBuilder containerBuilder) : base(containerBuilder)
         {
-            
         }
     }
 }

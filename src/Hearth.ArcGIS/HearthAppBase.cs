@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DryIoc;
+﻿using DryIoc;
 
 namespace Hearth.ArcGIS
 {

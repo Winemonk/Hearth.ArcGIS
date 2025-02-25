@@ -12,6 +12,7 @@ namespace Hearth.ArcGIS
         /// </summary>
         /// <param name="profileTypes">映射配置类型</param>
         void AddProfiles(params Type[] profileTypes);
+
         /// <summary>
         /// 添加映射配置
         /// </summary>
