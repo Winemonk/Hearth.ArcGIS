@@ -1,4 +1,4 @@
-# Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog...）
+# Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog、AutoMapper...）
 
 ## 1 使用IoC、DI
 
@@ -191,7 +191,7 @@ using Hearth.ArcGIS.Samples.Services;
 
 namespace Hearth.ArcGIS.Samples.PlugIns.Menus
 {
-    internal class SampleButton1 : Button, IInjectable
+    internal class SampleButton1 : Button, IInjectable // IScopeInjectable 使用作用域注入
     {
         [Inject]
         private readonly IHelloService? _helloService;
@@ -199,6 +199,7 @@ namespace Hearth.ArcGIS.Samples.PlugIns.Menus
         public SampleButton1()
         {
             this.InjectServices();
+            // this.InjectPropertiesAndFields(); // 不需要[Inject]特性标注注入字段/属性，但字段/属性也不能使用 readonly/init
         }
 
         protected override void OnClick()
@@ -216,11 +217,11 @@ using ArcGIS.Desktop.Framework.Contracts;
 
 namespace Hearth.ArcGIS.Samples.PlugIns.Contracts
 {
-    public class InjectableButton : Button, IInjectable // IScopeInjectable 使用作用域注入
+    public class InjectableButton : Button, IInjectable
     {
         public InjectableButton()
         {
-            this.InjectServices();
+            this.InjectPropertiesAndFields();
         }
     }
 }
@@ -236,8 +237,7 @@ namespace Hearth.ArcGIS.Samples.PlugIns.Menus
 {
     internal class SampleButton1 : InjectableButton
     {
-        [Inject]
-        private readonly IHelloService? _helloService;
+        private IHelloService? _helloService;
 
         protected override void OnClick()
         {
@@ -397,6 +397,55 @@ namespace Hearth.ArcGIS.Samples.Dialogs
     </Grid>
 </Window>
 ```
+
+### 1.3 自定义容器初始化
+
+HearthApp已经内置了DryIoc容器初始化、Nlog、ViewModelLocationProvider集成，当然也支持自定义初始化。
+
+实现`ContainerBuilderBase`与`HearthAppBase`：
+
+```csharp
+using DryIoc;
+
+namespace Hearth.ArcGIS.Samples
+{
+    public class CustomContainerBuilder : ContainerBuilder
+    {
+        public override Container Build()
+        {
+            Container container = new Container(
+                rules => rules
+                    .With(
+                        FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
+                        null,
+                        PropertiesAndFields.All()));
+            return container;
+        }
+    }
+}
+```
+
+```csharp
+namespace Hearth.ArcGIS.Samples
+{
+    public class CustomHearthApp : HearthAppBase
+    {
+        private static CustomHearthApp? _instance;
+        public static CustomHearthApp Instance => _instance ??= new CustomHearthApp(new CustomContainerBuilder());
+        public CustomHearthApp(ContainerBuilderBase containerBuilder) : base(containerBuilder)
+        {
+
+        }
+    }
+}
+```
+
+在使用依赖注入之前完成容器初始化、服务注册。
+
+```csharp
+CustomHearthApp.Instance.Container.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
+```
+
 
 ## 2 使用Options配置
 
@@ -801,4 +850,74 @@ test-2025-02-19.log
 [2025-02-19 15:34:02.0141] 1 Warn Hearth.ArcGIS.Samples.Services.TestLogService.WriteLog 19 Configured Type Logger Class LogWarning 
 [2025-02-19 15:34:02.0141] 1 Error Hearth.ArcGIS.Samples.Services.TestLogService.WriteLog 20 Configured Type Logger Class LogError 
 [2025-02-19 15:34:02.0141] 1 Fatal Hearth.ArcGIS.Samples.Services.TestLogService.WriteLog 21 Configured Type Logger Class LogCritical 
+```
+
+## 4 使用AutoMapper
+
+```csharp
+namespace Hearth.ArcGIS.Samples
+{
+    public class Person
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public DateTime Birthday { get; set; }
+    }
+}
+```
+
+```csharp
+using ArcGIS.Desktop.Framework.Contracts;
+
+namespace Hearth.ArcGIS.Samples
+{
+    public class PersonVO : ViewModelBase
+    {
+        private Guid _id;
+        public Guid Id
+        {
+            get => _id;
+            set => SetProperty(ref _id, value);
+        }
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+        private int _age;
+        public int Age
+        {
+            get => _age;
+            set => SetProperty(ref _age, value);
+        }
+        private DateTime _birthday;
+        public DateTime Birthday
+        {
+            get => _birthday;
+            set => SetProperty(ref _birthday, value);
+        }
+    }
+}
+```
+
+```csharp
+using AutoMapper;
+
+namespace Hearth.ArcGIS.Samples
+{
+    public class PersonProfile : Profile
+    {
+        public PersonProfile()
+        {
+            CreateMap<Person, PersonVO>();
+            CreateMap<PersonVO, Person>();
+        }
+    }
+}
+```
+
+```csharp
+HearthApp.CONTAINER.ConfigureMapper(typeof(PersonProfile));
 ```

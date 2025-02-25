@@ -9,7 +9,7 @@ namespace Hearth.ArcGIS
     public static class IInjectableExtensions
     {
         /// <summary>
-        /// 注入 <paramref name="injectable"/> 实例内的 <see cref="InjectAttribute"/> 标注的所有字段。
+        /// 解析并注入 <paramref name="injectable"/> 实例内的 <see cref="InjectAttribute"/> 标注的所有字段。
         /// </summary>
         /// <remarks>
         /// 若 <see cref="InjectAttribute"/> 标注字段为 <c>readonly</c> ，则必须在构造函数中注入。
@@ -18,12 +18,61 @@ namespace Hearth.ArcGIS
         /// <param name="injectable">可注入实例</param>
         public static void InjectServices(this IInjectable injectable)
         {
-            IResolver resolver = HearthApp.Container;
-            if (injectable is INamedScopeInjectable scope)
-                resolver = HearthApp.Container.OpenScope(scope.Name);
-            else if (injectable is IScopeInjectable)
-                resolver = HearthApp.Container.OpenScope();
-            InjectServices(resolver, injectable);
+            Container container = HearthAppBase.CurrentApp.Container;
+            if (injectable is IScopeInjectable scopeInjectable)
+                ScopeInjectServices(container, scopeInjectable);
+            else
+                InjectServices(container, injectable);
+        }
+
+        /// <summary>
+        /// 解析并注入 <paramref name="injectable"/> 实例内的所有字段和属性。
+        /// </summary>
+        /// <remarks>
+        /// 需要注入的字段或属性，不可标注为 <c>readonly</c>、<c>init</c>。
+        /// </remarks>
+        /// <param name="injectable">可注入实例</param>
+        /// <param name="propertyAndFieldNames">指定需要注入的属性和字段名称</param>
+        public static void InjectPropertiesAndFields(this IInjectable injectable, params string[] propertyAndFieldNames)
+        {
+            Container container = HearthAppBase.CurrentApp.Container;
+            if (injectable is IScopeInjectable scopeInjectable)
+            {
+                IResolverContext scope;
+                if (scopeInjectable is INamedScopeInjectable namedScope)
+                    scope = container.OpenScope(namedScope.Name);
+                else
+                    scope = container.OpenScope();
+                try
+                {
+                    scope.InjectPropertiesAndFields(injectable, propertyAndFieldNames);
+                }
+                finally
+                {
+                    scope?.Dispose();
+                }
+            }
+            else
+            {
+                container.InjectPropertiesAndFields(injectable, propertyAndFieldNames);
+            }
+        }
+
+        private static void ScopeInjectServices(Container container, IScopeInjectable injectable)
+        {
+            IResolverContext scope;
+            if (injectable is INamedScopeInjectable namedScope)
+                scope = container.OpenScope(namedScope.Name);
+            else
+                scope = container.OpenScope();
+            try
+            {
+                InjectServices(scope, injectable);
+            }
+            finally
+            {
+                scope?.Dispose();
+            }
         }
 
         private static void InjectServices(IResolver resolver, IInjectable injectable)

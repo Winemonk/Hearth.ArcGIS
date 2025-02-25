@@ -11,17 +11,17 @@
     <Title>$(AssemblyName)</Title>
     <Authors>Winemonk</Authors>
     <Company>Hearth</Company>
-    <Description>Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog...）</Description>
+    <Description>Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog、AutoMapper...）</Description>
     <Copyright>©2025 By Winemonk</Copyright>
     <PackageIcon>wm@128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>winemonk;hearth;dryioc;options;nlog;mvvm;framework</PackageTags>
-    <PackageReleaseNotes>Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog...）</PackageReleaseNotes>
+    <PackageReleaseNotes>Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog、AutoMapper...）</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS.Samples</RepositoryUrl>
     <PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS/</PackageProjectUrl>
-    <AssemblyVersion>0.0.1</AssemblyVersion>
-    <FileVersion>0.0.1.2</FileVersion>
-    <Version>0.0.1-rc2</Version>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
+    <Version>1.0.1-rc1</Version>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -32,16 +32,17 @@
 
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows'">
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="DryIoc.Microsoft.DependencyInjection" Version="6.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
-
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
 		<PackageReference Include="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />

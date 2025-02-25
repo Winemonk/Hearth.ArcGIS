@@ -1,4 +1,5 @@
-﻿using DryIoc;
+﻿using AutoMapper;
+using DryIoc;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
@@ -7,22 +8,31 @@ namespace Hearth.ArcGIS
     /// <summary>
     /// 容器构建器
     /// </summary>
-    internal class ContainerBuilder
+    public class ContainerBuilder : IContainerBuilder
     {
-        internal static Container Build()
+        /// <summary>
+        /// 构建容器
+        /// </summary>
+        /// <returns><see cref="Container"/> 实例</returns>
+        public virtual Container Build()
         {
-            Container container = new Container(rules => rules.With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic));
-            container.Register<HearthApp>(Reuse.Singleton);
-            AddNLog(container);
-            UseLocationProvider(container);
+            Container container = new Container(
+                rules => rules
+                    .With(
+                        FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
+                        null,
+                        PropertiesAndFields.All()));
+            AddLogger(container);
+            AddViewModelLocationProvider(container);
+            AddMapperProvidor(container);
             return container;
         }
-
+        
         /// <summary>
         /// 添加 NLog
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        private static void AddNLog(Container container)
+        public void AddLogger(Container container)
         {
             var loggerFactory = LoggerFactory.Create(builder => builder.AddNLog());
             container.RegisterInstance<ILoggerFactory>(loggerFactory);
@@ -31,10 +41,10 @@ namespace Hearth.ArcGIS
         }
 
         /// <summary>
-        /// 使用视图模型定位提供程序
+        /// 添加视图模型定位提供程序
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        private static void UseLocationProvider(Container container)
+        public void AddViewModelLocationProvider(Container container)
         {
             ViewModelLocationProvider.SetDefaultViewModelFactory((view, viewModelType) =>
             {
@@ -42,6 +52,17 @@ namespace Hearth.ArcGIS
                     container.Register(viewModelType);
                 return container.Resolve(viewModelType, new object[] { view });
             });
+        }
+
+        /// <summary>
+        /// 添加映射器提供程序
+        /// </summary>
+        /// <param name="container"><see cref="Container"/> 实例</param>
+        public void AddMapperProvidor(Container container)
+        {
+            MapperProvider mapperProvider = new MapperProvider();
+            container.RegisterInstance(typeof(IMapper), mapperProvider);
+            container.RegisterInstance(typeof(IMapperConfigurator), mapperProvider);
         }
     }
 }

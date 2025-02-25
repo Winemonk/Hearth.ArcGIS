@@ -12,9 +12,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
+    <Content Include="Images\wm@128.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Hearth.ArcGIS" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hearth.ArcGIS\Hearth.ArcGIS.csproj" />
+    <ProjectReference Include="..\Hearth.ArcGIS.Samples.Core1\Hearth.ArcGIS.Samples.Core1.csproj" />
+    <ProjectReference Include="..\Hearth.ArcGIS.Samples.Core2\Hearth.ArcGIS.Samples.Core2.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

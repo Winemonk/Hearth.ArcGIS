@@ -111,15 +111,13 @@ namespace Hearth.ArcGIS.Samples.PlugIns.Panes
                 WriteIndented = true,
             };
             // 修改配置文件后刷新
-            using (IResolverContext resolver = HearthApp.Container.OpenScope())
-            {
-                IOptions<SampleSettings> scopeOptions = resolver.Resolve<IOptions<SampleSettings>>();
-                IOptionsMonitor<SampleSettings> scopeOptionsMonitor = resolver.Resolve<IOptionsMonitor<SampleSettings>>();
-                IOptionsSnapshot<SampleSettings> scopeOptionsSnapshot = resolver.Resolve<IOptionsSnapshot<SampleSettings>>();
-                ScopeOptionsValue = JsonSerializer.Serialize(scopeOptions.Value, options); // 不会变化
-                ScopeOptionsMonitorValue = JsonSerializer.Serialize(scopeOptionsMonitor.CurrentValue, options); // 会实时变化
-                ScopeOptionsSnapshotValue = JsonSerializer.Serialize(scopeOptionsSnapshot.Value, options); // 会实时变化
-            }
+            using IResolverContext resolver = HearthApp.CONTAINER.OpenScope();
+            IOptions<SampleSettings> scopeOptions = resolver.Resolve<IOptions<SampleSettings>>();
+            IOptionsMonitor<SampleSettings> scopeOptionsMonitor = resolver.Resolve<IOptionsMonitor<SampleSettings>>();
+            IOptionsSnapshot<SampleSettings> scopeOptionsSnapshot = resolver.Resolve<IOptionsSnapshot<SampleSettings>>();
+            ScopeOptionsValue = JsonSerializer.Serialize(scopeOptions.Value, options); // 不会变化
+            ScopeOptionsMonitorValue = JsonSerializer.Serialize(scopeOptionsMonitor.CurrentValue, options); // 会实时变化
+            ScopeOptionsSnapshotValue = JsonSerializer.Serialize(scopeOptionsSnapshot.Value, options); // 会实时变化
         }
     }
 }

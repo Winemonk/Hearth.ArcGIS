@@ -1,6 +1,9 @@
 ﻿using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
+using DryIoc;
 using Hearth.ArcGIS.Samples.Configs;
+using Hearth.ArcGIS.Samples.Core1;
+using Hearth.ArcGIS.Samples.Core2;
 using Microsoft.Extensions.Configuration;
 
 namespace Hearth.ArcGIS.Samples
@@ -25,8 +28,13 @@ namespace Hearth.ArcGIS.Samples
             //     ]
             // }
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("samplesettings.json", true, true).Build();
-            HearthApp.Container.Configure<SampleSettings>(configuration.GetSection(typeof(SampleSettings).Name));
-            HearthApp.Container.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
+            //CustomHearthApp.Instance.Container.Configure<SampleSettings>(configuration.GetSection(typeof(SampleSettings).Name));
+            //CustomHearthApp.Instance.Container.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
+            HearthApp.CONTAINER.Configure<SampleSettings>(configuration.GetSection(typeof(SampleSettings).Name));
+            HearthApp.CONTAINER.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
+
+            //HearthApp.CONTAINER.ConfigureMapper<PersonProfile>().ConfigureMapper<DogProfile>();
+            HearthApp.CONTAINER.ConfigureMapper(typeof(PersonProfile), typeof(DogProfile));
         }
     }
 }

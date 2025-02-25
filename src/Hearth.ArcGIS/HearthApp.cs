@@ -5,20 +5,22 @@ namespace Hearth.ArcGIS
     /// <summary>
     /// 主程序
     /// </summary>
-    public class HearthApp
+    public class HearthApp : HearthAppBase
     {
-        private static Container? _container;
         private static HearthApp? _app;
-
         /// <summary>
         /// 获取当前 <see cref="HearthApp"/> 实例
         /// </summary>
-        /// <returns>当前 <see cref="HearthApp"/> 实例</returns>
-        public static HearthApp App => _app ??= Container.Resolve<HearthApp>();
+        public static HearthApp APP => _app ??= new HearthApp(new ContainerBuilder());
 
         /// <summary>
-        /// 获取当前当前 <see cref="HearthApp"/> 实例容器 <see cref="DryIoc.Container"/>
+        /// 获取 IoC 容器
         /// </summary>
-        public static Container Container => _container ??= ContainerBuilder.Build();
+        public static Container CONTAINER => APP.Container;
+
+        private HearthApp(IContainerBuilder containerBuilder) : base(containerBuilder)
+        {
+            
+        }
     }
 }

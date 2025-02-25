@@ -1,4 +1,5 @@
-﻿using DryIoc;
+﻿using AutoMapper;
+using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,43 @@ namespace Hearth.ArcGIS
     /// </summary>
     public static class ContainerExtensions
     {
+        /// <summary>
+        /// 配置映射器
+        /// </summary>
+        /// <typeparam name="T"><see cref="Profile"/> 映射配置类型</typeparam>
+        /// <param name="container"><see cref="Container"/> 实例</param>
+        /// <returns><see cref="Container"/> 实例</returns>
+        public static Container ConfigureMapper<T>(this Container container) where T : Profile
+        {
+            return container.ConfigureMapper(typeof(T));
+        }
+
+        /// <summary>
+        /// 配置映射器
+        /// </summary>
+        /// <param name="container"><see cref="Container"/> 实例</param>
+        /// <param name="profileTypes">映射配置类型</param>
+        /// <returns><see cref="Container"/> 实例</returns>
+        public static Container ConfigureMapper(this Container container, params Type[] profileTypes)
+        {
+            IMapperConfigurator mapperConfigurator = container.Resolve<IMapperConfigurator>();
+            mapperConfigurator.AddProfiles(profileTypes);
+            return container;
+        }
+
+        /// <summary>
+        /// 配置映射器
+        /// </summary>
+        /// <param name="container"><see cref="Container"/> 实例</param>
+        /// <param name="assemblies">扫描程序集</param>
+        /// <returns><see cref="Container"/> 实例</returns>
+        public static Container ConfigureMapper(this Container container, params Assembly[] assemblies)
+        {
+            IMapperConfigurator mapperConfigurator = container.Resolve<IMapperConfigurator>();
+            mapperConfigurator.AddProfiles(assemblies);
+            return container;
+        }
+
         /// <summary>
         /// 注册配置
         /// </summary>
