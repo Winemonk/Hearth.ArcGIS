@@ -8,25 +8,25 @@ namespace Hearth.ArcGIS
     public abstract class HearthAppBase
     {
         private static HearthAppBase? _currentApp;
-        private Container? _container;
+        private readonly Container? _container;
 
         /// <summary>
         /// HearthAppBase 构造函数
         /// </summary>
         /// <param name="containerBuilder">容器构建器</param>
-        public HearthAppBase(IContainerBuilder containerBuilder)
+        protected HearthAppBase(IContainerBuilder containerBuilder)
         {
             _container = containerBuilder.Build();
             _currentApp = this;
         }
 
         /// <summary>
-        /// 当前运行的HearthApp
+        /// 当前运行的 <see cref="HearthAppBase"/> 实例
         /// </summary>
         internal static HearthAppBase CurrentApp => _currentApp ?? throw new InvalidOperationException("No HearthApp is running.");
 
         /// <summary>
-        /// IoC容器
+        /// IoC 容器 <see cref="DryIoc.Container"/> 实例
         /// </summary>
         public Container Container => _container ?? throw new InvalidOperationException("IoC container is not initialized.");
     }

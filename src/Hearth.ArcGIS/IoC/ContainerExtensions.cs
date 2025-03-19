@@ -3,6 +3,7 @@ using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace Hearth.ArcGIS
@@ -12,6 +13,8 @@ namespace Hearth.ArcGIS
     /// </summary>
     public static class ContainerExtensions
     {
+        private static readonly HashSet<Assembly> _registeredAssemblies = new();
+
         /// <summary>
         /// 配置映射器
         /// </summary>
@@ -45,7 +48,20 @@ namespace Hearth.ArcGIS
         public static Container ConfigureMapper(this Container container, params Assembly[] assemblies)
         {
             IMapperConfigurator mapperConfigurator = container.Resolve<IMapperConfigurator>();
-            mapperConfigurator.AddProfiles(assemblies);
+            assemblies = assemblies.Where(a => a.GetReferencedAssemblies().Any(ran =>
+            {
+                try
+                {
+                    return Assembly.Load(ran).Equals(typeof(Profile).Assembly);
+                }
+                catch (Exception ex)
+                {
+                    container.Resolve<ILogger<Container>>()?.LogError(ex, "加载程序集 {assembly} 失败", ran.FullName);
+                    return false;
+                }
+            })).ToArray();
+            if (assemblies?.Length > 0)
+                mapperConfigurator.AddProfiles(assemblies);
             return container;
         }
 
@@ -70,21 +86,14 @@ namespace Hearth.ArcGIS
         /// 和实现 <see cref="IService"/> 的服务类型。
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        /// <param name="assembly">程序集</param>
-        public static void RegisterAssemblyAndRefrencedAssembliesTypes(this Container container, Assembly assembly)
+        /// <param name="assemblies">程序集</param>
+        public static void RegisterAssemblyAndRefrencedAssembliesTypes(this Container container, params Assembly[] assemblies)
         {
-            container.RegisterAssemblyTypes(assembly);
-
-            AssemblyName[] referencedAssemblyNames = assembly.GetReferencedAssemblies();
-            foreach (AssemblyName referencedAssemblyName in referencedAssemblyNames)
-            {
-                try
-                {
-                    Assembly referencedAssembly = Assembly.Load(referencedAssemblyName);
-                    container.RegisterAssemblyTypes(referencedAssembly);
-                }
-                catch { }
-            }
+            IEnumerable<Assembly> refrecedAssemblies = assemblies.SelectMany(a =>
+                a.GetReferencedAssemblies()
+                    .Select(Assembly.Load));
+            assemblies = assemblies.Concat(refrecedAssemblies).ToArray();
+            container.RegisterAssemblyTypes(assemblies);
         }
 
         /// <summary>
@@ -92,14 +101,34 @@ namespace Hearth.ArcGIS
         /// 和实现 <see cref="IService"/> 的服务类型。
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        /// <param name="assembly">程序集</param>
-        public static void RegisterAssemblyTypes(this Container container, Assembly assembly)
+        /// <param name="assemblies">程序集</param>
+        public static void RegisterAssemblyTypes(this Container container, params Assembly[] assemblies)
         {
-            IEnumerable<Type> classes = assembly.GetLoadableTypes().Where(t => t.IsClass && !t.IsAbstract);
-            foreach (Type type in classes)
+            Assembly[] needRegisterAssemblies= assemblies
+                .Where(ass =>
+                    ass.GetReferencedAssemblies()
+                        .Any(ra =>
+                            ra.FullName == typeof(HearthApp).Assembly.FullName))
+                .ToArray();
+            foreach (Assembly assembly in needRegisterAssemblies)
             {
-                RegisterAssemblyType(container, type);
+                if (!_registeredAssemblies.Add(assembly))
+                    continue;
+                try
+                {
+                    IEnumerable<Type> classes = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract);
+                    foreach (Type type in classes)
+                    {
+                        RegisterAssemblyType(container, type);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ILogger<Container> logger = container.Resolve<ILogger<Container>>();
+                    logger.LogError(ex, "注册程序集 {assembly} 类型失败", assembly.FullName);
+                }
             }
+            container.ConfigureMapper(assemblies);
         }
 
         private static void RegisterAssemblyType(Container container, Type implementationType)

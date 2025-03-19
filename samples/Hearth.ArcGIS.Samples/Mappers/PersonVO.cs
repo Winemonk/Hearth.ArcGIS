@@ -1,6 +1,6 @@
 ﻿using ArcGIS.Desktop.Framework.Contracts;
 
-namespace Hearth.ArcGIS.Samples.Core2
+namespace Hearth.ArcGIS.Samples.Mappers
 {
     public class PersonVO : ViewModelBase
     {

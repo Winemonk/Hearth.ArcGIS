@@ -1,5 +1,7 @@
 ﻿using Hearth.ArcGIS.Samples.PlugIns.Contracts;
 using Hearth.ArcGIS.Samples.Services;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Hearth.ArcGIS.Samples.PlugIns.Menus
 {

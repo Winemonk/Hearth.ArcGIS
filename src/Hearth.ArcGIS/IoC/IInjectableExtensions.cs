@@ -43,14 +43,8 @@ namespace Hearth.ArcGIS
                     scope = container.OpenScope(namedScope.Name);
                 else
                     scope = container.OpenScope();
-                try
-                {
-                    scope.InjectPropertiesAndFields(injectable, propertyAndFieldNames);
-                }
-                finally
-                {
-                    scope?.Dispose();
-                }
+                scopeInjectable.Scope = scope;
+                scope.InjectPropertiesAndFields(injectable, propertyAndFieldNames);
             }
             else
             {
@@ -65,14 +59,8 @@ namespace Hearth.ArcGIS
                 scope = container.OpenScope(namedScope.Name);
             else
                 scope = container.OpenScope();
-            try
-            {
-                InjectServices(scope, injectable);
-            }
-            finally
-            {
-                scope?.Dispose();
-            }
+            injectable.Scope = scope;
+            InjectServices(scope, injectable);
         }
 
         private static void InjectServices(IResolver resolver, IInjectable injectable)

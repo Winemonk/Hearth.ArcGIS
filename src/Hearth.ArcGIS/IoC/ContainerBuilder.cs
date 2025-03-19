@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DryIoc;
+﻿using DryIoc;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
@@ -21,7 +20,8 @@ namespace Hearth.ArcGIS
                     .With(
                         FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
                         null,
-                        PropertiesAndFields.All()));
+                        PropertiesAndFields.All())
+                    /*.WithTrackingDisposableTransients()*/);
             AddLogger(container);
             AddViewModelLocationProvider(container);
             AddMapperProvidor(container);
@@ -60,9 +60,9 @@ namespace Hearth.ArcGIS
         /// <param name="container"><see cref="Container"/> 实例</param>
         public void AddMapperProvidor(Container container)
         {
-            MapperProvider mapperProvider = new MapperProvider();
-            container.RegisterInstance(typeof(IMapper), mapperProvider);
-            container.RegisterInstance(typeof(IMapperConfigurator), mapperProvider);
+            container.Register(typeof(IMapperConfigurator),
+                typeof(MapperProvider),
+                Reuse.Singleton);
         }
     }
 }

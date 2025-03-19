@@ -15,7 +15,7 @@ namespace Hearth.ArcGIS
         public static HearthApp APP => _app ??= new HearthApp(new ContainerBuilder());
 
         /// <summary>
-        /// 获取 IoC 容器
+        /// 获取 IoC 容器 <see cref="Container"/> 实例
         /// </summary>
         public static Container CONTAINER => APP.Container;
 

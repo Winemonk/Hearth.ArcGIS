@@ -15,13 +15,13 @@
     <Copyright>©2025 By Winemonk</Copyright>
     <PackageIcon>wm@128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>winemonk;hearth;dryioc;options;nlog;mvvm;framework</PackageTags>
-    <PackageReleaseNotes>Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog、AutoMapper...）</PackageReleaseNotes>
+    <PackageTags>winemonk;hearth;dryioc;options;nlog;mvvm;framework;auto-mapper</PackageTags>
+    <PackageReleaseNotes>AutoMapper自动配置，优化代码结构，优化注册</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS.Samples</RepositoryUrl>
     <PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS/</PackageProjectUrl>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
-    <Version>1.0.1-rc1</Version>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
 	<ItemGroup>

@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hearth.ArcGIS", "src\Hearth
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hearth.ArcGIS.Samples", "samples\Hearth.ArcGIS.Samples\Hearth.ArcGIS.Samples.csproj", "{8AE4CFCE-1C86-42FE-80D2-EDAA17FA10C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.Samples.Core1", "samples\Hearth.ArcGIS.Samples.Core1\Hearth.ArcGIS.Samples.Core1.csproj", "{57F88B0D-DB89-4E23-9430-0D322CC2E06D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.Samples.Core2", "samples\Hearth.ArcGIS.Samples.Core2\Hearth.ArcGIS.Samples.Core2.csproj", "{5F7A5044-9F86-4B3A-A21C-125B9581F9BD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,14 +21,6 @@ Global
 		{8AE4CFCE-1C86-42FE-80D2-EDAA17FA10C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AE4CFCE-1C86-42FE-80D2-EDAA17FA10C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AE4CFCE-1C86-42FE-80D2-EDAA17FA10C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57F88B0D-DB89-4E23-9430-0D322CC2E06D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57F88B0D-DB89-4E23-9430-0D322CC2E06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57F88B0D-DB89-4E23-9430-0D322CC2E06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57F88B0D-DB89-4E23-9430-0D322CC2E06D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F7A5044-9F86-4B3A-A21C-125B9581F9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F7A5044-9F86-4B3A-A21C-125B9581F9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F7A5044-9F86-4B3A-A21C-125B9581F9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F7A5044-9F86-4B3A-A21C-125B9581F9BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

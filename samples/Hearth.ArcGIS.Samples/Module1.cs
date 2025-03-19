@@ -1,9 +1,7 @@
 ﻿using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
-using DryIoc;
 using Hearth.ArcGIS.Samples.Configs;
-using Hearth.ArcGIS.Samples.Core1;
-using Hearth.ArcGIS.Samples.Core2;
+using Hearth.ArcGIS.Samples.Mappers;
 using Microsoft.Extensions.Configuration;
 
 namespace Hearth.ArcGIS.Samples
@@ -33,8 +31,8 @@ namespace Hearth.ArcGIS.Samples
             HearthApp.CONTAINER.Configure<SampleSettings>(configuration.GetSection(typeof(SampleSettings).Name));
             HearthApp.CONTAINER.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
 
-            //HearthApp.CONTAINER.ConfigureMapper<PersonProfile>().ConfigureMapper<DogProfile>();
-            HearthApp.CONTAINER.ConfigureMapper(typeof(PersonProfile), typeof(DogProfile));
+            //HearthApp.CONTAINER.ConfigureMapper<PersonProfile>();
+            HearthApp.CONTAINER.ConfigureMapper(typeof(PersonProfile));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace Hearth.ArcGIS.Samples.Core2
+namespace Hearth.ArcGIS.Samples.Mappers
 {
     public class PersonProfile : Profile
     {

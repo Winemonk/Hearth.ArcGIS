@@ -18,12 +18,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Hearth.ArcGIS" Version="1.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Hearth.ArcGIS\Hearth.ArcGIS.csproj" />
-    <ProjectReference Include="..\Hearth.ArcGIS.Samples.Core1\Hearth.ArcGIS.Samples.Core1.csproj" />
-    <ProjectReference Include="..\Hearth.ArcGIS.Samples.Core2\Hearth.ArcGIS.Samples.Core2.csproj" />
+    <PackageReference Include="Hearth.ArcGIS" Version="1.0.1-rc1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

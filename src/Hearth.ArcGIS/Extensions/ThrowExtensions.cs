@@ -2,7 +2,7 @@
 {
     internal static class ThrowExtensions
     {
-        public static T ThrowIfNull<T>(this T obj, Exception? exception = null) where T : class
+        internal static T ThrowIfNull<T>(this T obj, Exception? exception = null) where T : class
         {
             if (obj != null)
                 return obj;

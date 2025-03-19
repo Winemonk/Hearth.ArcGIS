@@ -902,6 +902,9 @@ namespace Hearth.ArcGIS.Samples
 }
 ```
 
+**方式一：使用Profile配置**
+
+
 ```csharp
 using AutoMapper;
 
@@ -911,13 +914,43 @@ namespace Hearth.ArcGIS.Samples
     {
         public PersonProfile()
         {
-            CreateMap<Person, PersonVO>();
-            CreateMap<PersonVO, Person>();
+            CreateMap<Person, PersonVO>().ReverseMap();
         }
     }
 }
 ```
 
+**方式二：使用[AutoMap]特性标记**
+
 ```csharp
-HearthApp.CONTAINER.ConfigureMapper(typeof(PersonProfile));
+[AutoMap(typeof(PersonVO))]
+public class Person
+{
+    // ...
+}
+
+[AutoMap(typeof(Person))]
+public class PersonVO : ViewModelBase
+{
+    // ...
+}
+```
+
+使用：
+
+```csharp
+public class SomeSample
+{
+    private readonly IMapper _mapper;
+    public SomeSample(IMapper mapper)
+    {
+        _mapper = mapper;
+    }
+
+    public void DoSomeThings(PersonVO personVO)
+    {
+        // ...
+        Person person = _mapper.Map<Person>(personVO);
+    }
+}
 ```
