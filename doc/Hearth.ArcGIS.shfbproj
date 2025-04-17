@@ -33,7 +33,9 @@
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\src\Hearth.ArcGIS\bin\Debug\net6.0-windows\Hearth.ArcGIS.dll" />
-<DocumentationSource sourceFile="..\src\Hearth.ArcGIS\bin\Debug\net6.0-windows\Hearth.ArcGIS.xml" /></DocumentationSources>
+<DocumentationSource sourceFile="..\src\Hearth.ArcGIS\bin\Debug\net6.0-windows\Hearth.ArcGIS.xml" />
+<DocumentationSource sourceFile="..\src\Hearth.ArcGIS.Infrastructure\bin\Debug\net6.0-windows\Hearth.ArcGIS.Infrastructure.dll" />
+<DocumentationSource sourceFile="..\src\Hearth.ArcGIS.Infrastructure\bin\Debug\net6.0-windows\Hearth.ArcGIS.Infrastructure.xml" /></DocumentationSources>
     <BuildLogFile>build.log</BuildLogFile>
     <HelpTitle>Hearth.ArcGIS</HelpTitle>
     <HelpFileVersion>1.1.0</HelpFileVersion>
@@ -53,7 +55,7 @@
     <BinaryTOC>True</BinaryTOC>
     <IncludeFavorites>True</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
-    <AppendMarkdownFileExtensionsToUrls>True</AppendMarkdownFileExtensionsToUrls>
+    <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
     <VisibleItems>Attributes, InheritedMembers, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
     <HtmlHelp1xCompilerPath>..\..\..\..\software\HTML Help Workshop\</HtmlHelp1xCompilerPath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>

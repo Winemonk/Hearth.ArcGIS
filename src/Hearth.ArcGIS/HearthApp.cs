@@ -29,7 +29,11 @@ namespace Hearth.ArcGIS
         /// </summary>
         public static Container CONTAINER => APP.Container;
 
-        private HearthApp(IContainerBuilder containerBuilder) : base(containerBuilder)
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="containerBuilder">IoC 容器构建器</param>
+        protected HearthApp(IContainerBuilder containerBuilder) : base(containerBuilder)
         {
         }
     }

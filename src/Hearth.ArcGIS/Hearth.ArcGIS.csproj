@@ -16,12 +16,12 @@
     <PackageIcon>wm@128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>winemonk;hearth;arcgis;dryioc;options;nlog;mvvm;framework;auto-mapper</PackageTags>
-    <PackageReleaseNotes>AutoMapper自动配置，优化代码结构，优化注册</PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS.Samples</RepositoryUrl>
+    <PackageReleaseNotes>优化代码结构</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS</RepositoryUrl>
     <PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS/</PackageProjectUrl>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
-    <FileVersion>1.1.0</FileVersion>
-    <Version>1.1.0</Version>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
+    <FileVersion>1.2.0</FileVersion>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

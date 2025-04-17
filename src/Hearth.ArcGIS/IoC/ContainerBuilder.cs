@@ -1,6 +1,7 @@
 ﻿using DryIoc;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Hearth.ArcGIS
 {

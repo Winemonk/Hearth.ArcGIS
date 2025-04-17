@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>net6.0-windows;net8.0-windows</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<ApplicationIcon>wm@256.ico</ApplicationIcon>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Title>$(AssemblyName)</Title>
+	<Authors>Winemonk</Authors>
+	<Company>Hearth</Company>
+	<Description>Hearth ArcGIS 框架基础设施扩展</Description>
+	<Copyright>©2025 By Winemonk</Copyright>
+	<PackageIcon>wm@128.png</PackageIcon>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageTags>winemonk;hearth;arcgis;dryioc;dbcontext</PackageTags>
+	<PackageReleaseNotes>添加DbContext注册，仓储基类</PackageReleaseNotes>
+	<RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS</RepositoryUrl>
+	<PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS.Infrastructure/</PackageProjectUrl>
+	<AssemblyVersion>1.2.0</AssemblyVersion>
+	<FileVersion>1.2.0</FileVersion>
+	<Version>1.2.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+	<PackageReference Include="Hearth.ArcGIS" Version="1.1.0" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+  </ItemGroup>
+
+
+	<ItemGroup>
+		<Content Include="wm@256.ico" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\wm@128.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+</Project>
