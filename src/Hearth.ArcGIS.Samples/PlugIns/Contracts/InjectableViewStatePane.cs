@@ -1,5 +1,6 @@
 ﻿using ArcGIS.Core.CIM;
 using ArcGIS.Desktop.Core;
+using DryIoc;
 
 namespace Hearth.ArcGIS.Samples.PlugIns.Contracts
 {
@@ -18,5 +19,9 @@ namespace Hearth.ArcGIS.Samples.PlugIns.Contracts
                 return _cimView;
             }
         }
+
+        public IResolverContext Scope { get; set; }
+
+        ~InjectableViewStatePane() => Scope?.Dispose();
     }
 }

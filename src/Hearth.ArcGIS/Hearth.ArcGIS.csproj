@@ -15,7 +15,7 @@
     <Copyright>©2025 By Winemonk</Copyright>
     <PackageIcon>wm@128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>winemonk;hearth;dryioc;options;nlog;mvvm;framework;auto-mapper</PackageTags>
+    <PackageTags>winemonk;hearth;arcgis;dryioc;options;nlog;mvvm;framework;auto-mapper</PackageTags>
     <PackageReleaseNotes>AutoMapper自动配置，优化代码结构，优化注册</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS.Samples</RepositoryUrl>
     <PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS/</PackageProjectUrl>
@@ -23,6 +23,10 @@
     <FileVersion>1.1.0</FileVersion>
     <Version>1.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wm@256.ico" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="DryIoc.dll" Version="5.4.3" />
@@ -51,24 +55,15 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-    <None Remove="README.md" />
-    <None Remove="wm%40128.png" />
-  </ItemGroup>
-
   <ItemGroup>
-    <Content Include="README.md">
+    <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
-    </Content>
-    <Content Include="wm@256.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wm@128.png">
+    </None>
+    <None Include="..\..\wm@128.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
-    </Content>
+    </None>
   </ItemGroup>
 
 </Project>
