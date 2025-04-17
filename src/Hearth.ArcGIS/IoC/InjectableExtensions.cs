@@ -6,7 +6,7 @@ namespace Hearth.ArcGIS
     /// <summary>
     /// 注入扩展
     /// </summary>
-    public static class IInjectableExtensions
+    public static class InjectableExtensions
     {
         /// <summary>
         /// 解析并注入 <paramref name="injectable"/> 实例内的 <see cref="InjectAttribute"/> 标注的所有字段。
