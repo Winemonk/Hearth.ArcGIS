@@ -1,0 +1,27 @@
+# CONTAINER 属性
+
+
+获取 IoC 容器 Container 实例
+
+
+
+## Definition
+**命名空间：** <a href="N_Hearth_ArcGIS">Hearth.ArcGIS</a>  
+**程序集：** Hearth.ArcGIS (在 Hearth.ArcGIS.dll 中) 版本：1.1.0+1226e772e9a2b3048c2f3c2f269f27f8f1fb249e
+
+**C#**
+``` C#
+public static Container CONTAINER { get; }
+```
+
+
+
+#### 属性值
+Container
+
+## 参见
+
+
+#### 引用
+<a href="T_Hearth_ArcGIS_HearthApp">HearthApp 类</a>  
+<a href="N_Hearth_ArcGIS">Hearth.ArcGIS 命名空间</a>  

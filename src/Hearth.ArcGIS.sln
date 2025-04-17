@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hearth.ArcGIS", "src\Hearth.ArcGIS\Hearth.ArcGIS.csproj", "{FCB6BDCA-88A8-4EF2-BC2B-CD8E95D06CD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hearth.ArcGIS", "Hearth.ArcGIS\Hearth.ArcGIS.csproj", "{FCB6BDCA-88A8-4EF2-BC2B-CD8E95D06CD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.Samples", "src\Hearth.ArcGIS.Samples\Hearth.ArcGIS.Samples.csproj", "{CD61AC53-CA97-752A-989C-B06D1D26F37B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.Samples", "Hearth.ArcGIS.Samples\Hearth.ArcGIS.Samples.csproj", "{CD61AC53-CA97-752A-989C-B06D1D26F37B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
