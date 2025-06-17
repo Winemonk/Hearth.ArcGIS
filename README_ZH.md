@@ -1,22 +1,23 @@
-# Hearth ArcGIS Framework Extensions (DryIoC, Options, NLog, AutoMapper...)
+# Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog、AutoMapper...）
 
-## 1 Using IoC and DI
+## 1 使用IoC、DI
 
-### 1.1 Service Registration
+### 1.1 服务注册
 
-#### 1.1.1 Marking Services
+#### 1.1.1 标记服务 
 
-**Method 1: Using Attributes**  
+**方式一：使用特性标记**
 
-Mark service types with the `[Service]` attribute:
-
+需要注册服务类型时，在服务类型上添加`[Service]`标记：
 
 ```csharp
 public interface IHelloService
 {
     void SayHello();
 }
+```
 
+```csharp
 [Service]
 public class HelloService : IHelloService
 {
@@ -27,36 +28,36 @@ public class HelloService : IHelloService
 }
 ```
 
-`ServiceAttribute` definition:
+`ServiceAttribute`服务标记特性
 
 ```csharp
 /// <summary>
-/// Service marker attribute
+/// 服务标记特性
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class ServiceAttribute : Attribute
 {
     /// <summary>
-    /// Service registration key
+    /// 服务注册键
     /// </summary>
     public string? ServiceKey { get; set; }
 
     /// <summary>
-    /// Service registration type
+    /// 服务注册类型
     /// </summary>
     public Type? ServiceType { get; set; }
 
     /// <summary>
-    /// Service reuse mode
+    /// 服务重用模式
     /// </summary>
     public ReuseEnum Reuse { get; set; }
 
     /// <summary>
-    /// Service attribute
+    /// 服务特性
     /// </summary>
-    /// <param name="serviceType"> Service registration type </param>
-    /// <param name="serviceKey"> Service registration key </param>
-    /// <param name="reuse"> Service reuse mode </param>
+    /// <param name="serviceType"> 服务注册类型 </param>
+    /// <param name="serviceKey"> 服务注册键 </param>
+    /// <param name="reuse"> 服务重用模式 </param>
     public ServiceAttribute(Type? serviceType = null, string? serviceKey = null, ReuseEnum reuse = ReuseEnum.Default)
     {
         ServiceType = serviceType;
@@ -66,48 +67,50 @@ public sealed class ServiceAttribute : Attribute
 }
 ```
 
-`ReuseEnum` options:
+
+`ReuseEnum`服务重用模式：
 
 ```csharp
 /// <summary>
-/// Reuse mode enumeration
+/// 重用模式枚举
 /// </summary>
 public enum ReuseEnum
 {
     /// <summary>
-    /// Default.
+    /// 默认。
     /// </summary>
     Default,
 
     /// <summary>
-    /// Same as scoped but requires <see cref="ThreadScopeContext"/>.
+    /// 与作用域相同，但需要 <see cref="ThreadScopeContext"/> 。
     /// </summary>
     InThread,
 
     /// <summary>
-    /// Scoped to any scope (named or unnamed).
+    /// 作用域为任何作用域，可以有名称也可以没有名称。
     /// </summary>
     Scoped,
 
     /// <summary>
-    /// Same as <see cref="Scoped"/>, but falls back to <see cref="Singleton"/> when no scope is available.
+    /// 与 <see cref="Scoped"/> 相同，但在没有可用作用域的情况下，将回退到 <see cref="Singleton"/> 重用。
     /// </summary>
     ScopedOrSingleton,
 
     /// <summary>
-    /// Singleton in container.
+    /// 容器中单例。
     /// </summary>
     Singleton,
 
     /// <summary>
-    /// Transient (not reused).
+    /// 瞬态，即不会重复使用。
     /// </summary>
     Transient,
 }
 ```
 
-**Method 2: Implement Service Interfaces**  
-Implement `ITransientService`, `ISingletonService`, `IScopedService`, `IScopedOrSingletonService`, or `IInThreadService`:
+**方式二：继承服务接口**
+
+使需要注册服务类型实现`ITransientService`、`ISingletonService`、`IScopedService`、`IScopedOrSingletonService`、`IInThreadService`接口：
 
 ```csharp
 public class HelloService : IHelloService, ITransientService
@@ -119,9 +122,11 @@ public class HelloService : IHelloService, ITransientService
 }
 ```
 
-#### 1.1.2 Registering Services
+#### 1.1.2 注册服务
 
-Register services during module initialization using `HearthApp.Container.RegisterAssemblyAndRefrencedAssembliesTypes(Assembly assembly)`:
+在模块加载时调用`HearthApp.Container.RegisterAssemblyAndRefrencedAssembliesTypes(Assembly assembly)`方法，自动注册模块`Assembly`及所引用的全部`Assembly`中的服务类型。
+
+注册程序集类型：
 
 ```csharp
 internal class Module1 : Module
@@ -137,14 +142,15 @@ internal class Module1 : Module
 }
 ```
 
-### 1.2 Dependency Injection
+### 1.2 依赖注入
 
-#### 1.2.1 Property Injection
+#### 1.2.1 特性注入
+
 
 ```csharp
-// IInjectable - Default injection
-// IScopeInjectable - Scoped injection
-// INamedScopeInjectable - Named scope injection
+// IInjectable 默认注入
+// IScopeInjectable 使用作用域注入
+// INamedScopeInjectable 使用命名的作用域注入
 internal class SampleButton1 : Button, IInjectable 
 {
     [Inject]
@@ -153,7 +159,7 @@ internal class SampleButton1 : Button, IInjectable
     public SampleButton1()
     {
         this.InjectServices();
-        // Alternative without [Inject]:
+        // 不需要[Inject]特性标注注入字段/属性，但字段/属性也不能使用 readonly/init
         // this.InjectPropertiesAndFields(); 
     }
 
@@ -164,30 +170,31 @@ internal class SampleButton1 : Button, IInjectable
 }
 ```
 
-##### 1.2.1.1 `InjectAttribute`
+
+##### 1.2.1.1 `InjectAttribute`特性
 
 ```csharp
 /// <summary>
-/// Auto-injection attribute
+/// 自动注入特性
 /// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 public sealed class InjectAttribute : Attribute
 {
     /// <summary>
-    /// Service registration key
+    /// 服务注册键
     /// </summary>
     public object? Key { get; set; }
 
     /// <summary>
-    /// Service type
+    /// 服务类型
     /// </summary>
     public Type? ServiceType { get; set; }
 
     /// <summary>
-    /// Injection service attribute
+    /// 注入服务特性
     /// </summary>
-    /// <param name="key"> Service registration key </param>
-    /// <param name="serviceType"> Service type </param>
+    /// <param name="key"> 服务注册键 </param>
+    /// <param name="serviceType"> 服务类型 </param>
     public InjectAttribute(object? key = null, Type? serviceType = null)
     {
         Key = key;
@@ -196,11 +203,11 @@ public sealed class InjectAttribute : Attribute
 }
 ```
 
-#### 1.2.2 Constructor Injection
+#### 1.2.2 构造函数注入
 
-##### 1.2.2.1 Default Injection
+##### 1.2.2.1 默认注入
 
-Service registration:
+服务注册：
 
 ```csharp
 public interface IHelloService
@@ -218,7 +225,7 @@ public class HelloHearthAService : IHelloService
 }
 ```
 
-Constructor injection:
+构造函数注入：
 
 ```csharp
 public class HelloTest
@@ -226,52 +233,59 @@ public class HelloTest
     private readonly IHelloService _service;
     public HelloTest(IHelloService service)
     {
-        _service = service;
+        this._service = service;
     }
 }
 ```
 
-##### 1.2.2.2 Key-based Injection
+##### 1.2.2.2 根据键注入
 
-Service registration:
+服务注册：
 
 ```csharp
-[Service(typeof(IHelloService), "A", ReuseEnum.Transient)]
-public class HelloHearthAService : IHelloService
+public interface IHelloService
 {
-    public void SayHello() => Console.WriteLine("Hello, Hearth A!");
+    void SayHello();
 }
 
-[Service(typeof(IHelloService), "B", ReuseEnum.Transient)]
+[Service(typeof(IHelloService),"A",ReuseEnum.Transient)]
+public class HelloHearthAService : IHelloService
+{
+    public void SayHello()
+    {
+        Console.WriteLine("Hello, Hearth A!");
+    }
+}
+
+[Service(typeof(IHelloService),"B",ReuseEnum.Transient)]
 public class HelloHearthBService : IHelloService
 {
-    public void SayHello() => Console.WriteLine("Hello, Hearth B!");
+    public void SayHello()
+    {
+        Console.WriteLine("Hello, Hearth B!");
+    }
 }
 ```
 
-Constructor injection:
+构造函数注入：
 
 ```csharp
 public class HelloTest
 {
     private readonly IHelloService _aService;
     private readonly IHelloService _bService;
-    
-    public HelloTest(
-        [InjectParam("A")] IHelloService aService, 
-        [InjectParam("B")] IHelloService bService)
+    public HelloTest([InjectParam("A")]IHelloService aService, [InjectParam("B")]IHelloService bService)
     {
-        _aService = aService;
-        _bService = bService;
+        this._aService = aService;
+        this._bService = bService;
     }
 }
 ```
 
-#### 1.2.3 ViewModel Locator
 
-Use `ViewModelLocator` in XAML to bind view models. ViewModels can be registered using `[Service]` or auto-registered.
+#### 1.2.3 视图模型定位器
 
-ViewModel:
+对于自定义的View组件，可以在View的`xaml`中使用`ViewModelLocator`（视图模型定位器）来绑定View的视图模型。视图模型类型也可以使用`Service`标记来进行自定义注册，对于未注册的视图模型类型，`Hearth`会对绑定的视图模型进行默认注册、注入。
 
 ```csharp
 using ArcGIS.Desktop.Framework.Contracts;
@@ -290,21 +304,36 @@ namespace Hearth.ArcGIS.Samples.Dialogs
 }
 ```
 
-XAML usage:
-
 ```xml
-<Window ...
+<Window
+    x:Class="Hearth.ArcGIS.Samples.Dialogs.SampleWindow1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ha="clr-namespace:Hearth.ArcGIS;assembly=Hearth.ArcGIS"
-    ha:ViewModelLocator.AutoWireViewModel="True">
+    xmlns:local="clr-namespace:Hearth.ArcGIS.Samples.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SampleWindow1"
+    Width="800"
+    Height="450"
+    ha:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
     <Grid>
-        <TextBlock Text="{Binding SampleText}" />
+        <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="24"
+            FontWeight="Bold"
+            Text="{Binding SampleText}" />
     </Grid>
 </Window>
 ```
 
-### 1.3 Custom Container Initialization
+### 1.3 自定义容器初始化
 
-Customize container initialization by implementing `ContainerBuilderBase` and `HearthAppBase`:
+HearthApp已经内置了DryIoc容器初始化、Nlog、ViewModelLocationProvider集成，当然也支持自定义初始化。
+
+实现`ContainerBuilderBase`与`HearthAppBase`：
 
 ```csharp
 using DryIoc;
@@ -332,24 +361,25 @@ public class CustomHearthApp : HearthAppBase
 {
     private static CustomHearthApp? _instance;
     public static CustomHearthApp Instance => _instance ??= new CustomHearthApp(new CustomContainerBuilder());
-    
     public CustomHearthApp(IContainerBuilder containerBuilder) : base(containerBuilder)
     {
+
     }
 }
 ```
 
-Initialize before DI usage:
+在使用依赖注入之前完成容器初始化、服务注册。
 
 ```csharp
 CustomHearthApp.Instance.Container.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
 ```
 
-## 2 Using Options Configuration
 
-Reference: [Options Documentation](https://learn.microsoft.com/zh-cn/dotnet/core/extensions/options#options-interfaces)
+## 2 使用Options配置
 
-### 2.1 Create Configuration Class
+Options使用详见: [Options Documentation](https://learn.microsoft.com/zh-cn/dotnet/core/extensions/options#options-interfaces)
+
+### 2.1 创建配置类
 
 ```csharp
 namespace Hearth.ArcGIS.Samples.Configs
@@ -364,58 +394,60 @@ namespace Hearth.ArcGIS.Samples.Configs
 }
 ```
 
-### 2.2 Register Configuration During Module Initialization
+### 2.2 在模块初始化时注册配置
 
 ```csharp
 internal class Module1 : Module
 {
+    private static Module1 _this = null;
+
+    public static Module1 Current => _this ??= (Module1)FrameworkApplication.FindModule("Hearth_ArcGIS_Samples_Module");
+
     public Module1()
     {
-        // samplesettings.json content:
+        // samplesettings.json文件内容
         // "SampleSettings": {
         //     "Value1": "asd",
         //     "Value2": 123,
         //     "Value3": 123.456,
-        //     "Value4": [ "asd", "zxc", "qwe" ]
+        //     "Value4": [
+        //         "asd",
+        //         "zxc",
+        //         "qwe"
+        //     ]
         // }
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddJsonFile("samplesettings.json", true, true)
-            .Build();
-        
-        HearthApp.App.Configure<SampleSettings>(
-            configuration.GetSection(typeof(SampleSettings).Name));
+        IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("samplesettings.json", true, true).Build();
+        HearthApp.App.Configure<SampleSettings>(configuration.GetSection(typeof(SampleSettings).Name));
 
         HearthApp.App.RegisterAssemblyAndRefrencedAssembliesTypes(this.GetType().Assembly);
     }
 }
 ```
 
-### 2.3 Implement `IConfigurationProvider<T>` for Auto-Configuration
+### 2.3 实现 `IConfigurationProvider<T>` 自动配置
 
 ```csharp
-// Automatically registered on initialization
+// 实现此接口后，程序初始化时会自动扫描并注册配置，不需要主动注册
 public class SampleSettingsConfigurationProvider : IConfigurationProvider<SampleSettings>
 {
     public IConfiguration GetConfiguration()
     {
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddJsonFile("samplesettings.json", true, true)
-            .Build();
-        
+        IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("samplesettings.json", true, true).Build();
         return configuration.GetSection(typeof(SampleSettings).Name);
     }
 }
 ```
 
-## 3 Using NLog Logging
 
-Reference: [NLog Tutorial](https://github.com/NLog/NLog/wiki/Tutorial), [Advanced NLog Configuration](https://github.com/NLog/NLog/wiki/Configuration-file), [NLog Configuration Options](https://nlog-project.org/config/)
+## 3 使用NLog日志
 
-### 3.1 Log Configuration
+### 3.1 日志配置
 
-Configuration file location: `...\Pro\bin\nlog.config`  
+配置文件存储位置：...\Pro\bin\nlog.config （Pro安装目录的bin文件夹中）
 
-Example configuration:
+有关详细信息，请参阅[NLog 教程](https://github.com/NLog/NLog/wiki/Tutorial)、[高级 NLog 配置文件](https://github.com/NLog/NLog/wiki/Configuration-file)和[NLog 配置选项](https://nlog-project.org/config/)。
+
+配置文件样例：
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -424,16 +456,11 @@ Example configuration:
       xsi:schemaLocation="http://www.nlog-project.org/schemas/NLog.xsd NLog.xsd"
       autoReload="true"
       throwExceptions="false"
-      internalLogLevel="OFF" internalLogFile="c:\\temp\\nlog-internal.log">
+      internalLogLevel="OFF" internalLogFile="c:\temp\nlog-internal.log">
 	<variable name="logDirectory" value="${basedir}/GeoApp/logs"/>
 	<targets>
-		<target xsi:type="File" name="f_all" 
-                fileName="${logDirectory}/${shortdate}.log" 
-                archiveNumbering="Sequence" 
-                archiveEvery="Day" 
-                maxArchiveDays="30" 
-                archiveAboveSize="104857600"
-			    layout="[${longdate}] ${threadid} ${level} ${callsite} ${callsite-linenumber} ${message} ${exception}" />
+		<target xsi:type="File" name="f_all" fileName="${logDirectory}/${shortdate}.log" archiveNumbering="Sequence" archiveEvery="Day" maxArchiveDays="30" archiveAboveSize="104857600"
+				layout="[${longdate}] ${threadid} ${level} ${callsite} ${callsite-linenumber} ${message} ${exception}" />
 	</targets>
 	<rules>
 		<logger name="Hearth.*" minlevel="Debug" writeTo="f_all" />
@@ -442,14 +469,13 @@ Example configuration:
 </nlog>
 ```
 
-### 3.2 Logger Usage
+### 3.2 日志记录器使用
 
 ```csharp
 [Service]
 public class TestLogService
 {
     private readonly ILogger<TestLogService> _logger;
-    
     public TestLogService(ILogger<TestLogService> logger)
     {
         _logger = logger;
@@ -467,8 +493,7 @@ public class TestLogService
 }
 ```
 
-Log output:
-
+日志输出：
 ```bash
 [2025-02-19 15:34:02.0141] 1 Trace Hearth.ArcGIS.Samples.Services.TestLogService.WriteLog 16 Configured Type Logger Class LogTrace 
 [2025-02-19 15:34:02.0141] 1 Debug Hearth.ArcGIS.Samples.Services.TestLogService.WriteLog 17 Configured Type Logger Class LogDebug 
@@ -478,11 +503,11 @@ Log output:
 [2025-02-19 15:34:02.0141] 1 Fatal Hearth.ArcGIS.Samples.Services.TestLogService.WriteLog 21 Configured Type Logger Class LogCritical 
 ```
 
-## 4 Using AutoMapper
+## 4 使用AutoMapper
 
-Reference: [AutoMapper Documentation](https://docs.automapper.org/en/stable/)
+AutoMapper使用详见：[AutoMapper Documentation](https://docs.automapper.org/en/stable/)
 
-### 4.1 Model
+### 4.1 模型
 
 ```csharp
 public class Person
@@ -496,22 +521,35 @@ public class Person
 public class PersonVO : ViewModelBase
 {
     private Guid _id;
-    public Guid Id { get => _id; set => SetProperty(ref _id, value); }
-    
+    public Guid Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
     private string _name;
-    public string Name { get => _name; set => SetProperty(ref _name, value); }
-    
+    public string Name
+    {
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
     private int _age;
-    public int Age { get => _age; set => SetProperty(ref _age, value); }
-    
+    public int Age
+    {
+        get => _age;
+        set => SetProperty(ref _age, value);
+    }
     private DateTime _birthday;
-    public DateTime Birthday { get => _birthday; set => SetProperty(ref _birthday, value); }
+    public DateTime Birthday
+    {
+        get => _birthday;
+        set => SetProperty(ref _birthday, value);
+    }
 }
 ```
 
-### 4.2 Configuration
+### 4.2 配置
 
-**Method 1: Using Profile Configuration**
+**方式一：使用Profile配置**
 
 ```csharp
 using AutoMapper;
@@ -528,23 +566,28 @@ namespace Hearth.ArcGIS.Samples
 }
 ```
 
-**Method 2: Using [AutoMap] Attribute**
+**方式二：使用[AutoMap]特性标记**
 
 ```csharp
 [AutoMap(typeof(PersonVO))]
-public class Person { /* ... */ }
+public class Person
+{
+    // ...
+}
 
 [AutoMap(typeof(Person))]
-public class PersonVO : ViewModelBase { /* ... */ }
+public class PersonVO : ViewModelBase
+{
+    // ...
+}
 ```
 
-### 4.3 Usage
+### 4.3 使用
 
 ```csharp
 public class SomeSample
 {
     private readonly IMapper _mapper;
-    
     public SomeSample(IMapper mapper)
     {
         _mapper = mapper;
@@ -552,8 +595,8 @@ public class SomeSample
 
     public void DoSomeThings(PersonVO personVO)
     {
-        Person person = _mapper.Map<Person>(personVO);
         // ...
+        Person person = _mapper.Map<Person>(personVO);
     }
 }
 ```

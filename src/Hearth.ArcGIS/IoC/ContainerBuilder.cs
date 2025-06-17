@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Hearth.ArcGIS
 {
@@ -20,12 +21,17 @@ namespace Hearth.ArcGIS
                 rules => rules
                     .With(
                         FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
-                        null,
+                        Parameters.Of.Details((r, p) =>
+                        {
+                            InjectParamAttribute? importOptions = p.GetCustomAttribute<InjectParamAttribute>();
+                            return importOptions == null ? null :
+                                 ServiceDetails.Of(serviceKey: importOptions.Key, requiredServiceType: importOptions.ServiceType);
+                        }),
                         PropertiesAndFields.All())
                     /*.WithTrackingDisposableTransients()*/);
-            AddLogger(container);
+            AddNlog(container);
             AddViewModelLocationProvider(container);
-            AddMapperProvidor(container);
+            AddAutoMapper(container);
             return container;
         }
 
@@ -33,7 +39,7 @@ namespace Hearth.ArcGIS
         /// 添加 NLog
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        public void AddLogger(Container container)
+        protected void AddNlog(Container container)
         {
             var loggerFactory = LoggerFactory.Create(builder => builder.AddNLog());
             container.RegisterInstance<ILoggerFactory>(loggerFactory);
@@ -45,7 +51,7 @@ namespace Hearth.ArcGIS
         /// 添加视图模型定位提供程序
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        public void AddViewModelLocationProvider(Container container)
+        protected void AddViewModelLocationProvider(Container container)
         {
             ViewModelLocationProvider.SetDefaultViewModelFactory((view, viewModelType) =>
             {
@@ -59,7 +65,7 @@ namespace Hearth.ArcGIS
         /// 添加映射器提供程序
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        public void AddMapperProvidor(Container container)
+        protected void AddAutoMapper(Container container)
         {
             container.Register(typeof(IMapperConfigurator),
                 typeof(MapperProvider),

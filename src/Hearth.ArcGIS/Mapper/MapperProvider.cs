@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DryIoc;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Hearth.ArcGIS
@@ -8,7 +9,7 @@ namespace Hearth.ArcGIS
     /// <summary>
     /// Mapper分发器
     /// </summary>
-    public class MapperProvider : IMapperConfigurator/*, IMapper*/
+    internal class MapperProvider : IMapperConfigurator
     {
         private readonly object _syncLock = new object();
         private readonly HashSet<Type> _profileTypes = new HashSet<Type>();
@@ -29,14 +30,17 @@ namespace Hearth.ArcGIS
             _logger = logger;
         }
 
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         private void UpdateMapper()
         {
             ConfigurationProvider = new MapperConfiguration(cfg =>
             {
                 cfg.AddMaps(_assemblies);
+                _logger?.LogDebug("配置映射程序集：{@assemblies}", _assemblies.Select(a => a.FullName));
                 foreach (var profileType in _profileTypes)
                 {
                     cfg.AddProfile(profileType);
+                    _logger?.LogDebug("配置映射类型：{@profileType}", profileType.FullName);
                 }
             });
             HearthAppBase.CurrentApp.Container.RegisterInstance(typeof(IMapper), ConfigurationProvider.CreateMapper(), IfAlreadyRegistered.Replace);
@@ -46,6 +50,7 @@ namespace Hearth.ArcGIS
         /// 添加映射配置
         /// </summary>
         /// <param name="profileTypes">映射配置类型</param>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public void AddProfiles(params Type[] profileTypes)
         {
             lock (_syncLock)
@@ -62,6 +67,7 @@ namespace Hearth.ArcGIS
         /// 添加映射配置
         /// </summary>
         /// <param name="assemblies">扫描程序集</param>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public void AddProfiles(params Assembly[] assemblies)
         {
             lock (_syncLock)

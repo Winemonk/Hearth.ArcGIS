@@ -21,10 +21,12 @@
 	<AssemblyVersion>1.2.0</AssemblyVersion>
 	<FileVersion>1.2.0</FileVersion>
 	<Version>1.2.0</Version>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="Hearth.ArcGIS" Version="1.1.0" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+	  <PackageReference Include="Hearth.ArcGIS" Version="1.2.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
   </ItemGroup>
 
 
@@ -33,6 +35,10 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<None Include="..\..\LICENSE">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\..\README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>

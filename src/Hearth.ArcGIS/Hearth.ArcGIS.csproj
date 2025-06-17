@@ -16,12 +16,14 @@
     <PackageIcon>wm@128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>winemonk;hearth;arcgis;dryioc;options;nlog;mvvm;framework;auto-mapper</PackageTags>
-    <PackageReleaseNotes>优化代码结构</PackageReleaseNotes>
+    <PackageReleaseNotes>添加构造函数注入参数选项</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS</RepositoryUrl>
     <PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS/</PackageProjectUrl>
-    <AssemblyVersion>1.2.0</AssemblyVersion>
-    <FileVersion>1.2.0</FileVersion>
-    <Version>1.2.0</Version>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
+    <Version>2.0.0</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -56,6 +58,10 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -64,6 +70,11 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hearth.ArcGIS.SourceGeneration\Hearth.ArcGIS.SourceGeneration.csproj"  OutputItemType="Analyzer"
+					ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

@@ -13,6 +13,7 @@ namespace Hearth.ArcGIS
     /// </summary>
     public static class ContainerExtensions
     {
+        private static readonly ILogger<HearthAppBase>? _logger = HearthAppBase.CurrentApp.Container.Resolve<ILogger<HearthAppBase>>(ifUnresolved: IfUnresolved.ReturnDefault);
         private static readonly HashSet<Assembly> _registeredAssemblies = new();
 
         /// <summary>
@@ -78,6 +79,7 @@ namespace Hearth.ArcGIS
             services.AddOptions();
             services.Configure<TOptions>(configuration);
             container.Populate(services, (r, sd) => r.IsRegistered(sd.ServiceType));
+            _logger?.LogDebug("注册配置 {options} 成功", typeof(TOptions).FullName);
             return container;
         }
 
@@ -124,8 +126,7 @@ namespace Hearth.ArcGIS
                 }
                 catch (Exception ex)
                 {
-                    ILogger<Container> logger = container.Resolve<ILogger<Container>>();
-                    logger.LogError(ex, "注册程序集 {assembly} 类型失败", assembly.FullName);
+                    _logger?.LogError(ex, "注册程序集 {assembly} 类型失败", assembly.FullName);
                 }
             }
             container.ConfigureMapper(assemblies);
@@ -142,10 +143,12 @@ namespace Hearth.ArcGIS
                 {
                     RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
                     container.Register(implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                    _logger?.LogDebug("注册类型 {type} 成功", implementationType.FullName);
                 }
                 else
                 {
                     container.Register(registerAttribute.ServiceType, implementationType, serviceKey: registerAttribute.ServiceKey, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                    _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.FullName, registerAttribute.ServiceType.FullName);
                 }
                 return;
             }
@@ -156,6 +159,7 @@ namespace Hearth.ArcGIS
                 RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
                 // 注册类型
                 container.Register(implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                _logger?.LogDebug("注册类型 {type} 成功", implementationType.FullName);
                 return;
             }
         }
@@ -167,6 +171,7 @@ namespace Hearth.ArcGIS
             {
                 // 注册接口和类型
                 container.Register(interfaceType, implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
+                _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.FullName, interfaceType.FullName);
             }
         }
 

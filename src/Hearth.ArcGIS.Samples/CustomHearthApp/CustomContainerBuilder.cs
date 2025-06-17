@@ -12,6 +12,9 @@ namespace Hearth.ArcGIS.Samples
                         FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
                         null,
                         PropertiesAndFields.All()));
+            AddNlog(container);
+            AddAutoMapper(container);
+            AddViewModelLocationProvider(container);
             return container;
         }
     }

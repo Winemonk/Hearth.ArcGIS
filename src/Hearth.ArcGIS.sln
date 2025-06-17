@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.Samples", "He
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.Infrastructure", "Hearth.ArcGIS.Infrastructure\Hearth.ArcGIS.Infrastructure.csproj", "{CF83E98E-64F0-461C-8B04-279652429879}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hearth.ArcGIS.SourceGeneration", "Hearth.ArcGIS.SourceGeneration\Hearth.ArcGIS.SourceGeneration.csproj", "{6E5BE52B-0DAC-4289-9A2C-3C673E7B1E0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CF83E98E-64F0-461C-8B04-279652429879}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF83E98E-64F0-461C-8B04-279652429879}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF83E98E-64F0-461C-8B04-279652429879}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E5BE52B-0DAC-4289-9A2C-3C673E7B1E0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E5BE52B-0DAC-4289-9A2C-3C673E7B1E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E5BE52B-0DAC-4289-9A2C-3C673E7B1E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E5BE52B-0DAC-4289-9A2C-3C673E7B1E0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
