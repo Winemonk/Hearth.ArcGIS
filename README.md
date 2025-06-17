@@ -1,3 +1,5 @@
+[中文文档](README_ZH.md)
+
 # Hearth ArcGIS Framework Extensions (DryIoC, Options, NLog, AutoMapper...)
 
 ## 1 Using IoC and DI

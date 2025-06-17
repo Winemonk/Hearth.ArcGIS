@@ -1,3 +1,5 @@
+[English Documentation](README.md)
+
 # Hearth ArcGIS 框架扩展（DryIoC、Options、Nlog、AutoMapper...）
 
 ## 1 使用IoC、DI
