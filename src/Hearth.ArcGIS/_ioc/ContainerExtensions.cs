@@ -4,7 +4,9 @@ using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Documents;
 
 namespace Hearth.ArcGIS
 {
@@ -15,6 +17,7 @@ namespace Hearth.ArcGIS
     {
         private static readonly ILogger<HearthAppBase>? _logger = HearthAppBase.CurrentApp.Container.Resolve<ILogger<HearthAppBase>>(ifUnresolved: IfUnresolved.ReturnDefault);
         private static readonly HashSet<Assembly> _registeredAssemblies = new();
+        private static readonly HashSet<string> _referenceAssemblyNames = new();
 
         /// <summary>
         /// 配置映射器
@@ -49,18 +52,11 @@ namespace Hearth.ArcGIS
         public static Container ConfigureMapper(this Container container, params Assembly[] assemblies)
         {
             IMapperConfigurator mapperConfigurator = container.Resolve<IMapperConfigurator>();
-            assemblies = assemblies.Where(a => a.GetReferencedAssemblies().Any(ran =>
-            {
-                try
-                {
-                    return Assembly.Load(ran).Equals(typeof(Profile).Assembly);
-                }
-                catch (Exception ex)
-                {
-                    container.Resolve<ILogger<Container>>()?.LogError(ex, "加载程序集 {assembly} 失败", ran.FullName);
-                    return false;
-                }
-            })).ToArray();
+            assemblies = assemblies.Where(
+                a => a != typeof(HearthApp).Assembly
+                    && a.GetReferencedAssemblies().Any(
+                        ran => ran.FullName.Equals(typeof(Profile).Assembly.FullName)))
+                .ToArray();
             if (assemblies?.Length > 0)
                 mapperConfigurator.AddProfiles(assemblies);
             return container;
@@ -79,34 +75,43 @@ namespace Hearth.ArcGIS
             services.AddOptions();
             services.Configure<TOptions>(configuration);
             container.Populate(services, (r, sd) => r.IsRegistered(sd.ServiceType));
-            _logger?.LogDebug("注册配置 {options} 成功", typeof(TOptions).FullName);
+            _logger?.LogDebug("注册配置 {options} 成功", typeof(TOptions).GetFullName());
             return container;
         }
 
         /// <summary>
-        /// 注册程序集及其引用程序集中所有 <see cref="ServiceAttribute"/> 特性标记的服务类型，
+        /// 自动注册应用程序域的程序集中所有 <see cref="ServiceAttribute"/> 特性标记的服务类型，
         /// 和实现 <see cref="IService"/> 的服务类型。
+        /// 注册程序集及其引用程序集中所有 <see cref="Profile"/> 实现类的映射配置。
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
-        /// <param name="assemblies">程序集</param>
-        public static void RegisterAssemblyAndRefrencedAssembliesTypes(this Container container, params Assembly[] assemblies)
+        public static Container AutoRegisterAssemblyTypes(this Container container)
         {
-            IEnumerable<Assembly> refrecedAssemblies = assemblies.SelectMany(a =>
-                a.GetReferencedAssemblies()
-                    .Select(Assembly.Load));
-            assemblies = assemblies.Concat(refrecedAssemblies).ToArray();
-            container.RegisterAssemblyTypes(assemblies);
+            Assembly callingAssembly = Assembly.GetCallingAssembly();
+            container.RegisterAssemblyTypes(callingAssembly);
+            AssemblyName[] assemblyNames = callingAssembly.GetReferencedAssemblies();
+            Assembly[] referencedAssemblies = assemblyNames.Select(Assembly.Load).ToArray();
+            container.RegisterAssemblyTypes(referencedAssemblies);
+            //Assembly[] runtimeAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            //container.RegisterAssemblyTypes(runtimeAssemblies);
+            AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
+            {
+                Debug.WriteLine($"HearthApp -> 程序集加载事件：{e.LoadedAssembly.FullName}，开始扫描程序集...");
+                container.RegisterAssemblyTypes(e.LoadedAssembly);
+            };
+            return container;
         }
 
         /// <summary>
         /// 注册程序集中所有 <see cref="ServiceAttribute"/> 特性标记的服务类型，
         /// 和实现 <see cref="IService"/> 的服务类型。
+        /// 注册程序集中所有 <see cref="Profile"/> 实现类的映射配置。
         /// </summary>
         /// <param name="container"><see cref="Container"/> 实例</param>
         /// <param name="assemblies">程序集</param>
-        public static void RegisterAssemblyTypes(this Container container, params Assembly[] assemblies)
+        public static Container RegisterAssemblyTypes(this Container container, params Assembly[] assemblies)
         {
-            Assembly[] needRegisterAssemblies= assemblies
+            Assembly[] needRegisterAssemblies = assemblies
                 .Where(ass =>
                     ass.GetReferencedAssemblies()
                         .Any(ra =>
@@ -114,11 +119,13 @@ namespace Hearth.ArcGIS
                 .ToArray();
             foreach (Assembly assembly in needRegisterAssemblies)
             {
+                Debug.WriteLine($"HearthApp -> 开始注册程序集 {assembly.FullName} 中服务...");
                 if (!_registeredAssemblies.Add(assembly))
                     continue;
                 try
                 {
                     IEnumerable<Type> classes = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract);
+                    Type[] types = classes.ToArray();
                     foreach (Type type in classes)
                     {
                         RegisterAssemblyType(container, type);
@@ -129,7 +136,7 @@ namespace Hearth.ArcGIS
                     _logger?.LogError(ex, "注册程序集 {assembly} 类型失败", assembly.FullName);
                 }
             }
-            container.ConfigureMapper(assemblies);
+            return container.ConfigureMapper(assemblies);
         }
 
         private static void RegisterAssemblyType(Container container, Type implementationType)
@@ -142,13 +149,13 @@ namespace Hearth.ArcGIS
                 if (registerAttribute.ServiceType == null)
                 {
                     RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
-                    container.Register(implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
-                    _logger?.LogDebug("注册类型 {type} 成功", implementationType.FullName);
+                    container.Register(implementationType, reuse: reuse);
+                    _logger?.LogDebug("注册类型 {type} 成功", implementationType.GetFullName());
                 }
                 else
                 {
-                    container.Register(registerAttribute.ServiceType, implementationType, serviceKey: registerAttribute.ServiceKey, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
-                    _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.FullName, registerAttribute.ServiceType.FullName);
+                    container.Register(registerAttribute.ServiceType, implementationType, serviceKey: registerAttribute.ServiceKey, reuse: reuse);
+                    _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.GetFullName(), registerAttribute.ServiceType.GetFullName());
                 }
                 return;
             }
@@ -158,8 +165,8 @@ namespace Hearth.ArcGIS
                 IReuse? reuse = GetReuseByType(implementationType);
                 RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
                 // 注册类型
-                container.Register(implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
-                _logger?.LogDebug("注册类型 {type} 成功", implementationType.FullName);
+                container.Register(implementationType, reuse: reuse);
+                _logger?.LogDebug("注册类型 {type} 成功", implementationType.GetFullName());
                 return;
             }
         }
@@ -170,8 +177,8 @@ namespace Hearth.ArcGIS
             foreach (Type interfaceType in interfaces)
             {
                 // 注册接口和类型
-                container.Register(interfaceType, implementationType, reuse: reuse, ifAlreadyRegistered: IfAlreadyRegistered.Keep);
-                _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.FullName, interfaceType.FullName);
+                container.Register(interfaceType, implementationType, reuse: reuse);
+                _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.GetFullName(), interfaceType.GetFullName());
             }
         }
 

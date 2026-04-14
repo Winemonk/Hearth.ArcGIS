@@ -15,18 +15,19 @@
 	<PackageIcon>wm@128.png</PackageIcon>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageTags>winemonk;hearth;arcgis;dryioc;dbcontext</PackageTags>
-	<PackageReleaseNotes>添加DbContext注册，仓储基类</PackageReleaseNotes>
+	<PackageReleaseNotes>包含基础仓储类、用户隔离、审计信息、软删除等业务模块</PackageReleaseNotes>
 	<RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS</RepositoryUrl>
 	<PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS.Infrastructure/</PackageProjectUrl>
-	<AssemblyVersion>1.2.0</AssemblyVersion>
-	<FileVersion>1.2.0</FileVersion>
-	<Version>1.2.0</Version>
+	<AssemblyVersion>2.0.2</AssemblyVersion>
+	<FileVersion>2.0.2</FileVersion>
+	<Version>2.0.2</Version>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
 	  <PackageReference Include="Hearth.ArcGIS" Version="1.2.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0" />
   </ItemGroup>
 
 

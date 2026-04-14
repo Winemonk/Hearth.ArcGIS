@@ -51,7 +51,7 @@ namespace Hearth.ArcGIS
         private static Type? DefaultViewTypeToViewModel(Type viewType)
         {
             // 策略1
-            var viewName = viewType.FullName;
+            var viewName = viewType.GetFullName();
             var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
             var suffix = viewName != null && viewName.EndsWith("View") ? "Model" : "ViewModel";
             var viewModelName = string.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);

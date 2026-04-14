@@ -17,11 +17,7 @@ namespace Hearth.ArcGIS
 
         private readonly ILogger<MapperProvider>? _logger;
 
-        /// <summary>
-        /// 用于执行映射的配置提供程序
-        /// </summary>
-        public IConfigurationProvider ConfigurationProvider { get; private set; }
-
+#if NET6_0
         /// <summary>
         /// Mapper分发器
         /// </summary>
@@ -29,10 +25,30 @@ namespace Hearth.ArcGIS
         {
             _logger = logger;
         }
+#elif NET8_0
+        private readonly ILoggerFactory _loggerFactory;
+
+        /// <summary>
+        /// Mapper分发器
+        /// </summary>
+        public MapperProvider(ILogger<MapperProvider> logger, ILoggerFactory loggerFactory)
+        {
+            _logger = logger;
+            _loggerFactory = loggerFactory;
+        }
+#endif
+
+        /// <summary>
+        /// 用于执行映射的配置提供程序
+        /// </summary>
+        public IConfigurationProvider ConfigurationProvider { get; private set; }
+
+        
 
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         private void UpdateMapper()
         {
+#if NET6_0
             ConfigurationProvider = new MapperConfiguration(cfg =>
             {
                 cfg.AddMaps(_assemblies);
@@ -40,9 +56,22 @@ namespace Hearth.ArcGIS
                 foreach (var profileType in _profileTypes)
                 {
                     cfg.AddProfile(profileType);
-                    _logger?.LogDebug("配置映射类型：{@profileType}", profileType.FullName);
+                    _logger?.LogDebug("配置映射类型：{@profileType}", profileType.GetFullName());
                 }
             });
+#elif NET8_0
+            ConfigurationProvider = new MapperConfiguration(cfg =>
+            {
+                cfg.AddMaps(_assemblies);
+                _logger?.LogDebug("配置映射程序集：{@assemblies}", _assemblies.Select(a => a.FullName));
+                foreach (var profileType in _profileTypes)
+                {
+                    cfg.AddProfile(profileType);
+                    _logger?.LogDebug("配置映射类型：{@profileType}", profileType.GetFullName());
+                }
+            }, _loggerFactory);
+#endif
+
             HearthAppBase.CurrentApp.Container.RegisterInstance(typeof(IMapper), ConfigurationProvider.CreateMapper(), IfAlreadyRegistered.Replace);
         }
 
