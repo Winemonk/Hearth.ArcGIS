@@ -1,4 +1,5 @@
 ﻿using DryIoc;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace Hearth.ArcGIS
@@ -74,8 +75,15 @@ namespace Hearth.ArcGIS
                     continue;
                 }
                 Type serviceType = autowireAttribute.ServiceType ?? fieldInfo.FieldType;
-                object val = resolver.Resolve(serviceType, serviceKey: autowireAttribute.Key);
-                fieldInfo.SetValue(injectable, val);
+                try
+                {
+                    object val = resolver.Resolve(serviceType, serviceKey: autowireAttribute.Key);
+                    fieldInfo.SetValue(injectable, val);
+                }
+                catch (Exception ex)
+                {
+                    resolver.Resolve<ILogger<HearthAppBase>>().LogError(ex, "未能解析类型的服务'{serviceType}'通过键'{key}'.", serviceType.FullName, autowireAttribute.Key);
+                }
             }
         }
 

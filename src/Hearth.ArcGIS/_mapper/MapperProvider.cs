@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DryIoc;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Hearth.ArcGIS
@@ -43,7 +42,7 @@ namespace Hearth.ArcGIS
         /// </summary>
         public IConfigurationProvider ConfigurationProvider { get; private set; }
 
-        
+
 
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         private void UpdateMapper()

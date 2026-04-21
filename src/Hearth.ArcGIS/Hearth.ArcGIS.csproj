@@ -16,12 +16,12 @@
     <PackageIcon>wm@128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>winemonk;hearth;arcgis;dryioc;options;nlog;mvvm;framework;auto-mapper</PackageTags>
-    <PackageReleaseNotes>1. 修改注册逻辑；</PackageReleaseNotes>
+    <PackageReleaseNotes>1. 添加解析异常捕获逻辑；2.更新依赖；</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/WineMonk/Hearth.ArcGIS</RepositoryUrl>
     <PackageProjectUrl>https://www.nuget.org/packages/Hearth.ArcGIS/</PackageProjectUrl>
-    <AssemblyVersion>2.1.0</AssemblyVersion>
-    <FileVersion>2.1.0</FileVersion>
-    <Version>2.1.0</Version>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.1.1.1</FileVersion>
+    <Version>2.1.1</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
