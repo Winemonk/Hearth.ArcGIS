@@ -148,8 +148,8 @@ namespace Hearth.ArcGIS
                 IReuse? reuse = GetIReuseByEnum(registerAttribute.Reuse);
                 if (registerAttribute.ServiceType == null)
                 {
-                    RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
-                    container.Register(implementationType, reuse: reuse);
+                    RegisterAssemblyTypeByInterfaces(container, implementationType, reuse, registerAttribute.ServiceKey);
+                    container.Register(implementationType, reuse: reuse, serviceKey: registerAttribute.ServiceKey);
                     _logger?.LogDebug("注册类型 {type} 成功", implementationType.GetFullName());
                 }
                 else
@@ -159,11 +159,31 @@ namespace Hearth.ArcGIS
                 }
                 return;
             }
-            // 根据接口注册服务
+            MultiServiceAttribute[] multiRegisterAttributes = implementationType.GetCustomAttributes<MultiServiceAttribute>().ToArray();
+            if (multiRegisterAttributes.Length > 0)
+            {
+                foreach (var multiRegisterAttribute in multiRegisterAttributes)
+                {
+                    IReuse? reuse = GetIReuseByEnum(multiRegisterAttribute.Reuse);
+                    if (multiRegisterAttribute.ServiceType == null)
+                    {
+                        RegisterAssemblyTypeByInterfaces(container, implementationType, reuse, multiRegisterAttribute.ServiceKey);
+                        container.Register(implementationType, reuse: reuse, serviceKey: multiRegisterAttribute.ServiceKey);
+                        _logger?.LogDebug("注册类型 {type} 成功", implementationType.GetFullName());
+                    }
+                    else
+                    {
+                        container.Register(multiRegisterAttribute.ServiceType, implementationType, serviceKey: multiRegisterAttribute.ServiceKey, reuse: reuse);
+                        _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.GetFullName(), multiRegisterAttribute.ServiceType.GetFullName());
+                    }
+                }
+                return;
+            }
             if (typeof(IService).IsAssignableFrom(implementationType))
             {
+                // 根据接口注册服务
                 IReuse? reuse = GetReuseByType(implementationType);
-                RegisterAssemblyTypeByInterfaces(container, implementationType, reuse);
+                RegisterAssemblyTypeByInterfaces(container, implementationType, reuse, null);
                 // 注册类型
                 container.Register(implementationType, reuse: reuse);
                 _logger?.LogDebug("注册类型 {type} 成功", implementationType.GetFullName());
@@ -171,13 +191,13 @@ namespace Hearth.ArcGIS
             }
         }
 
-        private static void RegisterAssemblyTypeByInterfaces(Container container, Type implementationType, IReuse? reuse)
+        private static void RegisterAssemblyTypeByInterfaces(Container container, Type implementationType, IReuse? reuse, object? serviceKey)
         {
             IEnumerable<Type> interfaces = implementationType.GetInterfaces().Where(i => !i.IsSpecifiedService());
             foreach (Type interfaceType in interfaces)
             {
                 // 注册接口和类型
-                container.Register(interfaceType, implementationType, reuse: reuse);
+                container.Register(interfaceType, implementationType, reuse: reuse, serviceKey: serviceKey);
                 _logger?.LogDebug("注册类型 {type} -> {serviceType} 成功", implementationType.GetFullName(), interfaceType.GetFullName());
             }
         }
